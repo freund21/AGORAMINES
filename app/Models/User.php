@@ -61,11 +61,11 @@ class User extends Authenticatable
     }
 
     // PROYECTO:
-    // Relacion muchos a muchos con subcategorias.
-    // Representa las subcategorias asociadas al usuario.
-    public function subcategories()
+    // Relacion muchos a muchos con categorias.
+    // Representa las categorias en las que este usuario puede votar.
+    public function categories()
     {
-        return $this->belongsToMany(Subcategory::class);
+        return $this->belongsToMany(Category::class);
     }
 
     // PROYECTO:
