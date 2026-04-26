@@ -28,10 +28,10 @@ class Category extends Model
     }
 
     // PROYECTO:
-    // Relacion muchos a muchos: subcategorias habilitadas para votar aqui.
-    public function subcategories()
+    // Relacion muchos a muchos: usuarios habilitados para votar aqui.
+    public function users()
     {
-        return $this->belongsToMany(Subcategory::class);
+        return $this->belongsToMany(User::class);
     }
 
     // PROYECTO:

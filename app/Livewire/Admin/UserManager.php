@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Category;
 use App\Models\Role;
-use App\Models\Subcategory;
 use App\Models\User;
 use Livewire\Component;
 
@@ -11,7 +11,7 @@ use Livewire\Component;
 // Componente Livewire creado para el panel admin de usuarios.
 // LIVEWIRE: estado de interfaz + metodos llamados desde botones.
 // BASE LARAVEL: validacion, Eloquent, relaciones y sesiones flash.
-// PROYECTO: alta, edicion, borrado y asignacion de roles/subcategorias.
+// PROYECTO: alta, edicion, borrado y asignacion de roles/categorias.
 class UserManager extends Component
 {
     // LIVEWIRE + PROYECTO:
@@ -27,13 +27,13 @@ class UserManager extends Component
     public string $email = '';
     public string $contrasena = '';
     public int $id_rol = 2;
-    public array $ids_subcategorias = [];
+    public array $ids_categorias = [];
 
     // PROYECTO + LIVEWIRE:
     // Prepara el formulario para un nuevo usuario.
     public function crear()
     {
-        $this->reset(['idEdicion', 'dni', 'usuario', 'nombre_completo', 'email', 'contrasena', 'id_rol', 'ids_subcategorias']);
+        $this->reset(['idEdicion', 'dni', 'usuario', 'nombre_completo', 'email', 'contrasena', 'id_rol', 'ids_categorias']);
         $this->id_rol = 2;
         $this->mostrarFormulario = true;
     }
@@ -50,7 +50,7 @@ class UserManager extends Component
         $this->email = $usuario->email;
         $this->contrasena = '';
         $this->id_rol = $usuario->role_id;
-        $this->ids_subcategorias = $usuario->subcategories->pluck('id')->toArray();
+        $this->ids_categorias = $usuario->categories->pluck('id')->toArray();
         $this->mostrarFormulario = true;
     }
 
@@ -92,9 +92,9 @@ class UserManager extends Component
         }
 
         // BASE LARAVEL + PROYECTO:
-        // sync() actualiza la relacion muchos a muchos con subcategorias.
-        // Un usuario puede estar relacionado con varias subcategorias.
-        $usuario->subcategories()->sync($this->ids_subcategorias);
+        // sync() actualiza la relacion muchos a muchos con categorias.
+        // Un usuario puede estar relacionado con varias categorias de voto.
+        $usuario->categories()->sync($this->ids_categorias);
 
         $this->mostrarFormulario = false;
         session()->flash('message', 'Usuario guardado correctamente.');
@@ -113,9 +113,9 @@ class UserManager extends Component
     public function render()
     {
         return view('livewire.admin.user-manager', [
-            'usuarios' => User::with(['role', 'subcategories'])->get(),
+            'usuarios' => User::with(['role', 'categories.election'])->get(),
             'roles' => Role::all(),
-            'subcategorias' => Subcategory::all(),
+            'categorias' => Category::with('election')->orderBy('election_id')->orderBy('name')->get(),
         ])->layout('layouts.app', ['title' => 'Gestion de Usuarios']);
     }
 }
