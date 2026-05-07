@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Election extends Model
 {
     // BASE LARAVEL + PROYECTO:
-    // $fillable es de Laravel; estos campos concretos definen la votacion del proyecto.
+    // $fillable es de Laravel; estos campos concretos definen la votación del proyecto.
     protected $fillable = [
         'title',
         'description',
@@ -22,7 +22,7 @@ class Election extends Model
     ];
 
     // BASE LARAVEL + PROYECTO:
-    // Casts de Laravel: convierte tipos automaticamente para estos campos de votacion.
+    // Casts de Laravel: convierte tipos automáticamente para estos campos de votación.
     protected function casts(): array
     {
         return [
@@ -34,14 +34,14 @@ class Election extends Model
     }
 
     // PROYECTO:
-    // Relacion: una eleccion tiene muchas categorias.
+    // Relación: una elección tiene muchas categorías.
     public function categories()
     {
         return $this->hasMany(Category::class);
     }
 
     // PROYECTO:
-    // Relacion: una eleccion tiene muchos votos.
+    // Relación: una elección tiene muchos votos.
     public function votes()
     {
         return $this->hasMany(Vote::class);
@@ -49,7 +49,7 @@ class Election extends Model
 
     // PROYECTO:
     // Regla de negocio:
-    // una eleccion esta abierta solo si:
+    // una elección está abierta solo si:
     // - status = active
     // - fecha actual entre inicio y fin
     public function isOpen(): bool
