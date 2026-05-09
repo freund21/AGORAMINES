@@ -5,8 +5,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 // PROYECTO:
-// Nueva relacion directa entre usuarios y categorias.
-// Sustituye el camino anterior usuario -> subcategoria -> categoria.
+// Nueva relación directa entre usuarios y categorías.
+// Sustituye el camino anterior usuario -> subcategoría -> categoría.
 return new class extends Migration
 {
     public function up(): void

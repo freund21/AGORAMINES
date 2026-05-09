@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 
 // BASE LARAVEL:
 // Modelo Eloquent de Laravel para la tabla users.
-// Laravel ya trae un modelo User parecido cuando se crea un proyecto con autenticacion.
+// Laravel ya trae un modelo User parecido cuando se crea un proyecto con autenticación.
 // Eloquent = capa ORM: trabajar con filas de BD como objetos PHP.
 //
 // NOTA LIVEWIRE:
@@ -24,7 +24,7 @@ class User extends Authenticatable
     // MEZCLA BASE LARAVEL + PROYECTO:
     // Laravel suele traer name, email y password.
     // En este proyecto se han personalizado los campos:
-    // dni, username, full_name y role_id son propios de la aplicacion.
+    // dni, username, full_name y role_id son propios de la aplicación.
     protected $fillable = [
         'dni',
         'username',
@@ -43,8 +43,8 @@ class User extends Authenticatable
     ];
 
     // BASE LARAVEL:
-    // Conversores automaticos de Laravel.
-    // password => hashed: al guardar, Laravel aplica hash automaticamente.
+    // Conversores automáticos de Laravel.
+    // password => hashed: al guardar, Laravel aplica hash automáticamente.
     protected function casts(): array
     {
         return [
@@ -53,7 +53,7 @@ class User extends Authenticatable
     }
 
     // PROYECTO:
-    // Relacion propia de esta aplicacion: un usuario pertenece a un rol.
+    // Relación propia de esta aplicación: un usuario pertenece a un rol.
     // Sirve para distinguir admin/votante.
     public function role()
     {
@@ -61,29 +61,29 @@ class User extends Authenticatable
     }
 
     // PROYECTO:
-    // Relacion muchos a muchos con categorias.
-    // Representa las categorias en las que este usuario puede votar.
+    // Relación muchos a muchos con categorías.
+    // Representa las categorías en las que este usuario puede votar.
     public function categories()
     {
         return $this->belongsToMany(Category::class);
     }
 
     // PROYECTO:
-    // Relacion propia del sistema de votaciones: un usuario tiene muchos votos.
+    // Relación propia del sistema de votaciones: un usuario tiene muchos votos.
     public function votes()
     {
         return $this->hasMany(Vote::class);
     }
 
     // PROYECTO:
-    // Logica de negocio propia para saber si el usuario tiene rol administrador.
+    // Lógica de negocio propia para saber si el usuario tiene rol administrador.
     public function isAdmin(): bool
     {
         return $this->role->name === 'admin';
     }
 
     // PROYECTO:
-    // Comprueba si este usuario ya voto en una categoria concreta.
+    // Comprueba si este usuario ya votó en una categoría concreta.
     public function hasVotedInCategory(int $categoryId): bool
     {
         return $this->votes()->where('category_id', $categoryId)->exists();

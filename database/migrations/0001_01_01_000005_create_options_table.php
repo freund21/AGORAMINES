@@ -5,8 +5,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 // PROYECTO + BASE LARAVEL:
-// Migracion de opciones de voto creada para este proyecto.
-// Una opcion pertenece a una categoria (candidato, voto en blanco, etc.).
+// Migración de opciones de voto creada para este proyecto.
+// Una opción pertenece a una categoría (candidato, voto en blanco, etc.).
 return new class extends Migration
 {
     public function up(): void

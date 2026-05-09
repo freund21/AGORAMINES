@@ -25,8 +25,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // BASE LARAVEL:
-        // boot(): se ejecuta al arrancar la aplicacion.
-        // Aqui podrias poner ajustes globales de modelos, validaciones, etc.
+        // boot(): se ejecuta al arrancar la aplicación.
+        // Aquí podrías poner ajustes globales de modelos, validaciones, etc.
         //
     }
 }

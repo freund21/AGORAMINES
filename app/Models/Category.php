@@ -6,36 +6,36 @@ use Illuminate\Database\Eloquent\Model;
 
 // PROYECTO + BASE LARAVEL:
 // Modelo Eloquent creado para este proyecto para la tabla categories.
-// Una categoria pertenece a una eleccion y contiene opciones de voto.
+// Una categoría pertenece a una elección y contiene opciones de voto.
 class Category extends Model
 {
     // BASE LARAVEL + PROYECTO:
-    // $fillable es de Laravel; estos campos concretos son de la aplicacion.
+    // $fillable es de Laravel; estos campos concretos son de la aplicación.
     protected $fillable = ['election_id', 'name', 'max_selections'];
 
     // PROYECTO:
-    // Relacion: esta categoria pertenece a una eleccion.
+    // Relación: esta categoría pertenece a una elección.
     public function election()
     {
         return $this->belongsTo(Election::class);
     }
 
     // PROYECTO:
-    // Relacion: una categoria tiene muchas opciones.
+    // Relación: una categoría tiene muchas opciones.
     public function options()
     {
         return $this->hasMany(Option::class);
     }
 
     // PROYECTO:
-    // Relacion muchos a muchos: usuarios habilitados para votar aqui.
+    // Relación muchos a muchos: usuarios habilitados para votar aquí.
     public function users()
     {
         return $this->belongsToMany(User::class);
     }
 
     // PROYECTO:
-    // Relacion: votos emitidos en esta categoria.
+    // Relación: votos emitidos en esta categoría.
     public function votes()
     {
         return $this->hasMany(Vote::class);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesion - Sistema de Votaciones</title>
+    <title>Iniciar sesión - Sistema de Votaciones</title>
     <style>
        * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -42,14 +42,14 @@ body {
 
         {{-- BASE LARAVEL + PROYECTO:
              Blade de Laravel:
-             muestra primer error de validacion devuelto por AuthController@login --}}
+             muestra primer error de validación devuelto por AuthController@login --}}
         @if($errors->any())
             <div class="error-box">{{ $errors->first() }}</div>
         @endif
 
         {{-- BASE LARAVEL + PROYECTO:
-             Formulario HTTP clasico (no Livewire).
-             Se envia por POST a la ruta login del controlador. --}}
+             Formulario HTTP clásico (no Livewire).
+             Se envía por POST a la ruta login del controlador. --}}
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="form-group">
@@ -57,10 +57,10 @@ body {
                 <input type="text" id="username" name="username" value="{{ old('username') }}" required autofocus>
             </div>
             <div class="form-group">
-                <label for="password">Contrasena</label>
+                <label for="password">Contraseña</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn">Iniciar sesion</button>
+            <button type="submit" class="btn">Iniciar sesión</button>
         </form>
     </div>
 </body>

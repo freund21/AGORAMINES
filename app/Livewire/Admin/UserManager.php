@@ -9,13 +9,13 @@ use Livewire\Component;
 
 // LIVEWIRE + PROYECTO:
 // Componente Livewire creado para el panel admin de usuarios.
-// LIVEWIRE: estado de interfaz + metodos llamados desde botones.
-// BASE LARAVEL: validacion, Eloquent, relaciones y sesiones flash.
-// PROYECTO: alta, edicion, borrado y asignacion de roles/categorias.
+// LIVEWIRE: estado de interfaz + métodos llamados desde botones.
+// BASE LARAVEL: validación, Eloquent, relaciones y sesiones flash.
+// PROYECTO: alta, edición, borrado y asignación de roles/categorías.
 class UserManager extends Component
 {
     // LIVEWIRE + PROYECTO:
-    // Estado del formulario y del usuario en edicion.
+    // Estado del formulario y del usuario en edición.
     public bool $mostrarFormulario = false;
     public ?int $idEdicion = null;
 
@@ -92,8 +92,8 @@ class UserManager extends Component
         }
 
         // BASE LARAVEL + PROYECTO:
-        // sync() actualiza la relacion muchos a muchos con categorias.
-        // Un usuario puede estar relacionado con varias categorias de voto.
+        // sync() actualiza la relación muchos a muchos con categorías.
+        // Un usuario puede estar relacionado con varias categorías de voto.
         $usuario->categories()->sync($this->ids_categorias);
 
         $this->mostrarFormulario = false;
@@ -116,6 +116,6 @@ class UserManager extends Component
             'usuarios' => User::with(['role', 'categories.election'])->get(),
             'roles' => Role::all(),
             'categorias' => Category::with('election')->orderBy('election_id')->orderBy('name')->get(),
-        ])->layout('layouts.app', ['title' => 'Gestion de Usuarios']);
+        ])->layout('layouts.app', ['title' => 'Gestión de Usuarios']);
     }
 }

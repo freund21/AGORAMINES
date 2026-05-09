@@ -15,13 +15,13 @@ class AdminMiddleware
         // PROYECTO:
         // Regla de negocio:
         // - Debe haber usuario autenticado
-        // - Debe ser admin (metodo isAdmin() del modelo User)
+        // - Debe ser admin (método isAdmin() del modelo User)
         if (!auth()->check() || !auth()->user()->isAdmin()) {
             abort(403);
         }
 
         // BASE LARAVEL:
-        // Si pasa la validacion, la peticion continua.
+        // Si pasa la validación, la petición continúa.
         return $next($request);
     }
 }

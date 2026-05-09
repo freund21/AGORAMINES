@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 // MEZCLA BASE LARAVEL + PROYECTO:
-// users: Laravel trae una tabla de usuarios, pero aqui se ha personalizado
+// users: Laravel trae una tabla de usuarios, pero aquí se ha personalizado
 // con dni, username, full_name y role_id.
 // sessions: tabla base de Laravel para sesiones activas.
 return new class extends Migration
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             // PROYECTO:
-            // Relacion con roles.id; por defecto 2 (votante en este proyecto).
+            // Relación con roles.id; por defecto 2 (votante en este proyecto).
             $table->foreignId('role_id')->constrained('roles')->default(2);
             $table->rememberToken();
             $table->timestamps();

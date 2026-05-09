@@ -1,11 +1,11 @@
 <div>
     {{-- LIVEWIRE + PROYECTO:
          Vista Blade del componente Livewire Admin\UserManager.
-         Aqui se administra usuarios (crear, editar, eliminar). --}}
+         Aquí se administran usuarios (crear, editar, eliminar). --}}
     <div class="flex-between mb-2">
-        <h2>Gestion de Usuarios</h2>
+        <h2>Gestión de Usuarios</h2>
         {{-- LIVEWIRE:
-             wire:click llama al metodo crear() del componente PHP. --}}
+             wire:click llama al método crear() del componente PHP. --}}
         <button wire:click="crear" class="btn btn-primary">Nuevo usuario</button>
     </div>
 
@@ -48,7 +48,7 @@
                         @error('email') <span style="color:#dc2626;font-size:0.8rem;">{{ $message }}</span> @enderror
                     </div>
                     <div class="form-group">
-                        <label>Contrasena {{ $idEdicion ? '(dejar vacio para no cambiar)' : '' }}</label>
+                        <label>Contraseña {{ $idEdicion ? '(dejar vacío para no cambiar)' : '' }}</label>
                         <input type="password" wire:model="contrasena">
                         @error('contrasena') <span style="color:#dc2626;font-size:0.8rem;">{{ $message }}</span> @enderror
                     </div>
@@ -64,7 +64,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Categorias</label>
+                        <label>Categorías</label>
                         @foreach($categorias as $categoria)
                             <label style="display:flex;align-items:center;gap:0.3rem;font-weight:normal;margin-bottom:0.2rem;">
                                 <input type="checkbox" wire:model="ids_categorias" value="{{ $categoria->id }}">
@@ -78,7 +78,7 @@
                 <div class="flex gap-1 mt-2">
                     <button wire:click="guardar" class="btn btn-success">Guardar</button>
                     {{-- LIVEWIRE:
-                         $set es util de Livewire para cambiar propiedades desde la vista. --}}
+                         $set es útil de Livewire para cambiar propiedades desde la vista. --}}
                     <button wire:click="$set('mostrarFormulario', false)" class="btn btn-secondary">Cancelar</button>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                     <th>Nombre</th>
                     <th>Email</th>
                     <th>Rol</th>
-                    <th>Categorias</th>
+                    <th>Categorías</th>
                     <th>Acciones</th>
                 </tr>
             </thead>

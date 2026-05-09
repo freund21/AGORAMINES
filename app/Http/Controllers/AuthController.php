@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 // BASE LARAVEL + PROYECTO:
-// Controlador clasico de Laravel (no Livewire).
-// Aqui se ha picado el flujo de autenticacion propio: mostrar login, entrar y salir.
+// Controlador clásico de Laravel (no Livewire).
+// Aquí se ha picado el flujo de autenticación propio: mostrar login, entrar y salir.
 class AuthController extends Controller
 {
     // PROYECTO + BASE LARAVEL:
@@ -33,25 +33,25 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             // BASE LARAVEL:
-            // Seguridad de sesion: regenera identificador para evitar fixation.
+            // Seguridad de sesión: regenera identificador para evitar fixation.
             $request->session()->regenerate();
             return redirect()->intended('/');
         }
 
         // PROYECTO:
-        // Si falla, vuelve atras con mensaje de error propio.
+        // Si falla, vuelve atrás con mensaje de error propio.
         return back()->withErrors([
             'username' => 'Las credenciales no son correctas.',
         ])->onlyInput('username');
     }
 
     // BASE LARAVEL + PROYECTO:
-    // Cierra sesion del usuario actual desde la ruta /logout.
+    // Cierra sesión del usuario actual desde la ruta /logout.
     public function logout(Request $request)
     {
         Auth::logout();
         // BASE LARAVEL:
-        // Limpia sesion y token CSRF.
+        // Limpia sesión y token CSRF.
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login');

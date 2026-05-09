@@ -112,7 +112,7 @@
                 <a href="{{ route('admin.users') }}">Administrar usuarios</a>
             @endif
             {{-- BASE LARAVEL + PROYECTO:
-                 Formulario clasico Laravel (no Livewire) para cerrar sesion. --}}
+                 Formulario clásico Laravel (no Livewire) para cerrar sesión. --}}
             <form method="POST" action="{{ route('logout') }}" style="display:inline">
                 @csrf
                 <button type="submit" class="btn btn-sm btn-danger">Salir</button>
@@ -123,7 +123,7 @@
 
     <div class="container">
         {{-- LIVEWIRE + BLADE:
-             En $slot se renderiza el contenido de cada pagina/componente. --}}
+             En $slot se renderiza el contenido de cada página/componente. --}}
         {{ $slot }}
     </div>
 

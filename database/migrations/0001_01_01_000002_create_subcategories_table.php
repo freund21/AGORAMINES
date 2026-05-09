@@ -5,13 +5,13 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 // PROYECTO + BASE LARAVEL:
-// Migracion de subcategorias y relacion usuario-subcategoria.
+// Migración de subcategorías y relación usuario-subcategoría.
 return new class extends Migration
 {
     public function up(): void
     {
         // PROYECTO:
-        // Subcategorias de votantes (ejemplo: profesorado, alumnado...).
+        // Subcategorías de votantes (ejemplo: profesorado, alumnado...).
         Schema::create('subcategories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('subcategory_id')->constrained()->onDelete('cascade');
             // PROYECTO:
-            // Evita repetir la misma pareja usuario-subcategoria.
+            // Evita repetir la misma pareja usuario-subcategoría.
             $table->unique(['user_id', 'subcategory_id']);
         });
     }

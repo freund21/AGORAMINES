@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 // PROYECTO + BASE LARAVEL:
-// Migracion de votos emitidos creada para este proyecto.
+// Migración de votos emitidos creada para este proyecto.
 return new class extends Migration
 {
     public function up(): void
@@ -16,18 +16,18 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('option_id')->constrained()->onDelete('cascade');
             // PROYECTO:
-            // Puede ser null en votaciones anonimas.
+            // Puede ser null en votaciones anónimas.
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             // PROYECTO:
-            // Se guarda contenido cifrado para trazabilidad/verificacion.
+            // Se guarda contenido cifrado para trazabilidad/verificación.
             $table->text('encrypted_vote')->nullable();
             // PROYECTO:
-            // Codigo unico para que el votante verifique su voto.
+            // Código único para que el votante verifique su voto.
             $table->string('receipt_code')->unique();
             $table->timestamps();
 
             // PROYECTO:
-            // Evita doble voto de un mismo usuario en la misma categoria.
+            // Evita doble voto de un mismo usuario en la misma categoría.
             $table->unique(['user_id', 'category_id']);
         });
     }
