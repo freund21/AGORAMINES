@@ -28,18 +28,21 @@
             <div class="alert alert-error">{{ $message }}</div>
         @enderror
 
-        @foreach($categorias as $categoria)
-            <div class="card">
-                <h3>{{ $categoria->name }}</h3>
-                <p class="text-muted mb-1" style="font-size: 0.85rem;">
-                    Selecciona {{ $categoria->max_selections }} opción{{ $categoria->max_selections > 1 ? 'es' : '' }}
-                </p>
+        @if(! $eleccion->isOpen())
+            <div class="alert alert-error mb-3">La votación está cerrada y no puedes emitir tu voto.</div>
+        @else
+            @foreach($categorias as $categoria)
+                <div class="card">
+                    <h3>{{ $categoria->name }}</h3>
+                    <p class="text-muted mb-1" style="font-size: 0.85rem;">
+                        Selecciona {{ $categoria->max_selections }} opción{{ $categoria->max_selections > 1 ? 'es' : '' }}
+                    </p>
 
-                @if(auth()->user()->hasVotedInCategory($categoria->id))
-                    <div class="alert alert-info">Ya has votado en esta categoría.</div>
-                @else
-                    <div class="grid-2 mt-1">
-                        @foreach($categoria->options as $opcion)
+                    @if(auth()->user()->hasVotedInCategory($categoria->id))
+                        <div class="alert alert-info">Ya has votado en esta categoría.</div>
+                    @else
+                        <div class="grid-2 mt-1">
+                            @foreach($categoria->options as $opcion)
                             @php
                                 // BASE LARAVEL + PROYECTO:
                                 // PHP dentro de Blade:

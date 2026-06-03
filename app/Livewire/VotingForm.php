@@ -69,6 +69,11 @@ class VotingForm extends Component
     {
         $usuario = auth()->user();
 
+        if (! $this->eleccion->isOpen()) {
+            $this->addError('voto', 'La votación está cerrada y no puedes votar.');
+            return;
+        }
+
         // PROYECTO:
         // Solo se cargan las categorías en las que el usuario puede votar.
         $categoriasPermitidas = $this->eleccion->categories()
