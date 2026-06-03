@@ -30,12 +30,6 @@ class VotingForm extends Component
     {
         $this->eleccion = $eleccion;
 
-        // PROYECTO:
-        // Si la votación no está abierta, se impide el acceso al formulario.
-        if (! $this->eleccion->isOpen()) {
-            session()->flash('error', 'Esta votación no está abierta.');
-            return redirect()->route('elections.index');
-        }
     }
 
     // LIVEWIRE + PROYECTO:
