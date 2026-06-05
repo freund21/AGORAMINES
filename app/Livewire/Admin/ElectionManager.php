@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\Category;
 use App\Models\Election;
 use App\Models\Option;
+use App\Models\User;
 use Livewire\Component;
 
 // LIVEWIRE + PROYECTO:
@@ -38,6 +39,9 @@ class ElectionManager extends Component
     public string $nombre_categoria = '';
     public int $maximo_selecciones_categoria = 1;
     public string $texto_opciones_categoria = '';
+    // PROYECTO:
+    // IDs de los votantes habilitados para votar en esta categoría.
+    public array $usuarios_categoria = [];
 
     // PROYECTO + LIVEWIRE:
     // Prepara el formulario para crear una nueva votación.
@@ -124,20 +128,41 @@ class ElectionManager extends Component
     // Prepara el formulario para crear una categoría.
     public function crearCategoria()
     {
-        $this->reset(['idCategoriaEdicion', 'nombre_categoria', 'maximo_selecciones_categoria', 'texto_opciones_categoria']);
+        $this->reset(['idCategoriaEdicion', 'nombre_categoria', 'maximo_selecciones_categoria', 'texto_opciones_categoria', 'usuarios_categoria']);
         $this->maximo_selecciones_categoria = 1;
         $this->mostrarFormularioCategoria = true;
+    }
+
+    // PROYECTO:
+    // Lista de votantes seleccionables (usuarios con rol voter).
+    private function votantesDisponibles()
+    {
+        return User::whereHas('role', fn ($q) => $q->where('name', 'voter'))
+            ->orderBy('full_name')
+            ->get();
+    }
+
+    // PROYECTO + LIVEWIRE:
+    // Marca o desmarca de golpe a todos los votantes ("Seleccionar todos").
+    public function alternarTodosUsuarios()
+    {
+        $todos = $this->votantesDisponibles()->pluck('id')->toArray();
+
+        $this->usuarios_categoria = count($this->usuarios_categoria) === count($todos)
+            ? []
+            : $todos;
     }
 
     // PROYECTO:
     // Carga una categoría en el formulario de edición.
     public function editarCategoria(int $id)
     {
-        $categoria = Category::with('options')->findOrFail($id);
+        $categoria = Category::with('options', 'users')->findOrFail($id);
         $this->idCategoriaEdicion = $categoria->id;
         $this->nombre_categoria = $categoria->name;
         $this->maximo_selecciones_categoria = $categoria->max_selections;
         $this->texto_opciones_categoria = $categoria->options->pluck('label')->implode("\n");
+        $this->usuarios_categoria = $categoria->users->pluck('id')->toArray();
         $this->mostrarFormularioCategoria = true;
     }
 
@@ -171,6 +196,10 @@ class ElectionManager extends Component
             Option::create(['category_id' => $categoria->id, 'label' => $etiqueta]);
         }
 
+        // PROYECTO:
+        // Sincroniza los votantes habilitados para esta categoría.
+        $categoria->users()->sync($this->usuarios_categoria);
+
         $this->mostrarFormularioCategoria = false;
         session()->flash('message', 'Categoría guardada correctamente.');
     }
@@ -195,6 +224,7 @@ class ElectionManager extends Component
         return view('livewire.admin.election-manager', [
             'elecciones' => $elecciones,
             'eleccionGestionada' => $eleccionGestionada,
+            'votantes' => $this->votantesDisponibles(),
         ])->layout('layouts.app', ['title' => 'Gestión de Votaciones']);
     }
 }

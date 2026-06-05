@@ -47,6 +47,11 @@
                     <a href="{{ route('elections.vote', $eleccion) }}" class="btn btn-primary btn-sm">Votar</a>
                 @elseif($eleccion->usuario_ha_votado_todo && $eleccion->categorias_usuario->isNotEmpty())
                     <span class="badge badge-active">Ya has votado</span>
+                @elseif($eleccion->isOpen() && $eleccion->categorias_usuario->isEmpty())
+                    {{-- PROYECTO:
+                         El usuario actual (p. ej. un admin o alguien sin categorías
+                         asignadas) no está habilitado para votar en esta votación. --}}
+                    <span class="text-muted" style="font-size:0.85rem;">No estás habilitado para votar en esta votación.</span>
                 @endif
 
                 {{-- PROYECTO:

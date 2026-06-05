@@ -116,6 +116,32 @@
                         <textarea wire:model="texto_opciones_categoria" rows="4" placeholder="Candidato 1&#10;Candidato 2&#10;Voto en blanco"></textarea>
                     </div>
 
+                    {{-- LIVEWIRE + PROYECTO:
+                         Asignación de votantes habilitados para esta categoría,
+                         con casilla para seleccionar a todos de una vez. --}}
+                    <div class="form-group">
+                        <div class="flex-between mb-1">
+                            <label style="margin:0;">Votantes habilitados ({{ count($usuarios_categoria) }}/{{ $votantes->count() }})</label>
+                            <label style="display:flex;align-items:center;gap:0.3rem;font-weight:normal;font-size:0.85rem;cursor:pointer;">
+                                <input type="checkbox" wire:click="alternarTodosUsuarios"
+                                       @checked($votantes->count() > 0 && count($usuarios_categoria) === $votantes->count())>
+                                Seleccionar todos
+                            </label>
+                        </div>
+                        <div style="max-height:180px;overflow-y:auto;border:1px solid #d1d5db;border-radius:6px;padding:0.5rem;">
+                            @forelse($votantes as $votante)
+                                <label style="display:flex;align-items:center;gap:0.4rem;font-weight:normal;margin-bottom:0.25rem;cursor:pointer;">
+                                    <input type="checkbox" wire:model.live="usuarios_categoria" value="{{ $votante->id }}">
+                                    {{ $votante->full_name }}
+                                    <span class="text-muted" style="font-size:0.75rem;">({{ $votante->username }})</span>
+                                </label>
+                            @empty
+                                <p class="text-muted" style="font-size:0.85rem;">No hay votantes creados todavía. Créalos en "Administrar usuarios".</p>
+                            @endforelse
+                        </div>
+                        <p class="text-muted mt-1" style="font-size:0.8rem;">Solo los usuarios marcados podrán votar en esta categoría.</p>
+                    </div>
+
                     <div class="flex gap-1">
                         <button wire:click="guardarCategoria" class="btn btn-success btn-sm">Guardar</button>
                         <button wire:click="$set('mostrarFormularioCategoria', false)" class="btn btn-secondary btn-sm">Cancelar</button>
