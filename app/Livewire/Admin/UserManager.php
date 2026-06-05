@@ -104,6 +104,14 @@ class UserManager extends Component
     // Elimina un usuario.
     public function eliminar(int $id)
     {
+        // PROYECTO:
+        // Un administrador no puede eliminar su propia cuenta (evita quedarse
+        // sin acceso o dejar el sistema sin administradores por error).
+        if ($id === auth()->id()) {
+            session()->flash('message', 'No puedes eliminar tu propia cuenta.');
+            return;
+        }
+
         User::findOrFail($id)->delete();
         session()->flash('message', 'Usuario eliminado.');
     }

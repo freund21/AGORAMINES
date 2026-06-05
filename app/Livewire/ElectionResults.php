@@ -19,6 +19,14 @@ class ElectionResults extends Component
     // Laravel inyecta la elección desde la ruta.
     public function mount(Election $election)
     {
+        // PROYECTO:
+        // Control de acceso: los resultados solo se pueden ver si están
+        // habilitados en tiempo real o si la votación ya está cerrada.
+        // Esto evita ver resultados ocultos entrando directo a la URL.
+        if (! $election->realtime_results_enabled && $election->status !== 'closed') {
+            abort(403, 'Los resultados de esta votación no están disponibles todavía.');
+        }
+
         $this->election = $election;
     }
 
@@ -31,13 +39,21 @@ class ElectionResults extends Component
 
         foreach ($this->election->categories()->with('options')->get() as $category) {
             // PROYECTO:
+            // Una sola consulta agrupada por opción en vez de un count por opción
+            // (evita el problema N+1). Devuelve [option_id => nº de votos].
+            $conteoPorOpcion = Vote::where('category_id', $category->id)
+                ->selectRaw('option_id, COUNT(*) as total')
+                ->groupBy('option_id')
+                ->pluck('total', 'option_id');
+
+            // PROYECTO:
             // Total de votos emitidos en la categoría.
-            $totalVotes = Vote::where('category_id', $category->id)->count();
+            $totalVotes = (int) $conteoPorOpcion->sum();
 
             // PROYECTO:
             // Conteo y porcentaje por opción.
-            $options = $category->options->map(function ($option) use ($totalVotes) {
-                $count = Vote::where('option_id', $option->id)->count();
+            $options = $category->options->map(function ($option) use ($conteoPorOpcion, $totalVotes) {
+                $count = (int) ($conteoPorOpcion[$option->id] ?? 0);
                 return [
                     'label' => $option->label,
                     'votes' => $count,

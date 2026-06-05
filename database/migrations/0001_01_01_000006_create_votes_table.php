@@ -27,8 +27,14 @@ return new class extends Migration
             $table->timestamps();
 
             // PROYECTO:
-            // Evita doble voto de un mismo usuario en la misma categoría.
-            $table->unique(['user_id', 'category_id']);
+            // Índices para acelerar el conteo de resultados por categoría/opción.
+            $table->index('category_id');
+            $table->index('option_id');
+
+            // NOTA: el control de "ya ha votado" se hace en la tabla participations
+            // (migración 0008). No se usa unique(user_id, category_id) porque:
+            //  - en votaciones anónimas user_id es null y varios null se consideran distintos,
+            //  - con max_selections > 1 un usuario genera varias filas legítimas en la categoría.
         });
     }
 

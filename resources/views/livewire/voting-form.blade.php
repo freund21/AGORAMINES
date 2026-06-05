@@ -31,6 +31,14 @@
         @if(! $eleccion->isOpen())
             <div class="alert alert-error mb-3">La votación está cerrada y no puedes emitir tu voto.</div>
         @else
+            @php
+                // PROYECTO:
+                // Comprueba si queda alguna categoría pendiente de votar para
+                // decidir si mostramos el botón de confirmar.
+                $quedanCategoriasPorVotar = $categorias->contains(function ($categoria) {
+                    return ! auth()->user()->hasVotedInCategory($categoria->id);
+                });
+            @endphp
             @foreach($categorias as $categoria)
                 <div class="card">
                     <h3>{{ $categoria->name }}</h3>
@@ -67,12 +75,15 @@
 
         <div class="mt-2">
             {{-- LIVEWIRE + PROYECTO:
-                 Este botón ejecuta el método PHP enviarVotos() sin recargar la página entera. --}}
-            <button wire:click="enviarVotos" class="btn btn-success" wire:loading.attr="disabled">
-                <span wire:loading.remove>Confirmar voto</span>
-                <span wire:loading>Procesando...</span>
-            </button>
-            <a href="{{ route('elections.index') }}" class="btn btn-secondary" style="margin-left: 0.5rem;">Cancelar</a>
+                 El botón de confirmar solo aparece si queda alguna categoría por votar. --}}
+            @if($quedanCategoriasPorVotar)
+                <button wire:click="enviarVotos" class="btn btn-success" wire:loading.attr="disabled">
+                    <span wire:loading.remove>Confirmar voto</span>
+                    <span wire:loading>Procesando...</span>
+                </button>
+            @endif
+            <a href="{{ route('elections.index') }}" class="btn btn-secondary" style="margin-left: 0.5rem;">Volver a votaciones</a>
         </div>
+        @endif
     @endif
 </div>

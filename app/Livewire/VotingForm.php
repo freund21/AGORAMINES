@@ -3,7 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Election;
+use App\Models\Participation;
 use App\Models\Vote;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -81,52 +83,81 @@ class VotingForm extends Component
                 $consulta->where('users.id', $usuario->id);
             })->get();
 
-        // LIVEWIRE + PROYECTO:
-        // Se vacían los comprobantes antes de volver a generarlos.
-        $this->comprobantes = [];
-
+        // PROYECTO:
+        // Validación previa (servidor): para cada categoría pendiente debe haber
+        // selección y no superar max_selections. No confiamos solo en la UI.
         foreach ($categoriasPermitidas as $categoria) {
-            // PROYECTO:
-            // Si ya ha votado en la categoría, se salta.
             if ($usuario->hasVotedInCategory($categoria->id)) {
                 continue;
             }
 
             $idsOpciones = $this->opcionesSeleccionadas[$categoria->id] ?? [];
+
             if (empty($idsOpciones)) {
-                // LIVEWIRE:
-                // addError muestra errores en la vista.
                 $this->addError('voto', "Debes seleccionar una opción en: {$categoria->name}");
                 return;
             }
 
-            foreach ($idsOpciones as $idOpcion) {
-                $opcion = $categoria->options()->findOrFail($idOpcion);
-
-                // BASE LARAVEL + PROYECTO:
-                // Str es una utilidad de Laravel.
-                // Aquí se crea un código aleatorio para verificar el voto después.
-                $codigoComprobante = strtoupper(Str::random(12));
-
-                // BASE LARAVEL + PROYECTO:
-                // Eloquent inserta el voto en base de datos.
-                Vote::create([
-                    'election_id' => $this->eleccion->id,
-                    'category_id' => $categoria->id,
-                    'option_id' => $opcion->id,
-                    'user_id' => $this->eleccion->is_anonymous ? null : $usuario->id,
-                    'encrypted_vote' => encrypt($opcion->label),
-                    'receipt_code' => $codigoComprobante,
-                ]);
-
-                // LIVEWIRE + PROYECTO:
-                // Este array es solo para la interfaz, no es una tabla de base de datos.
-                $this->comprobantes[] = [
-                    'categoria' => $categoria->name,
-                    'codigo_comprobante' => $codigoComprobante,
-                ];
+            if (count($idsOpciones) > $categoria->max_selections) {
+                $this->addError('voto', "Has seleccionado demasiadas opciones en: {$categoria->name}");
+                return;
             }
         }
+
+        // LIVEWIRE + PROYECTO:
+        // Se vacían los comprobantes antes de volver a generarlos.
+        $this->comprobantes = [];
+
+        // BASE LARAVEL + PROYECTO:
+        // Todo el registro de votos se hace dentro de una transacción: si algo
+        // falla a mitad, no quedan votos ni participaciones parciales.
+        DB::transaction(function () use ($usuario, $categoriasPermitidas) {
+            foreach ($categoriasPermitidas as $categoria) {
+                // PROYECTO:
+                // Si ya ha votado en la categoría, se salta.
+                if ($usuario->hasVotedInCategory($categoria->id)) {
+                    continue;
+                }
+
+                $idsOpciones = $this->opcionesSeleccionadas[$categoria->id] ?? [];
+
+                foreach ($idsOpciones as $idOpcion) {
+                    // findOrFail garantiza que la opción pertenece a la categoría.
+                    $opcion = $categoria->options()->findOrFail($idOpcion);
+
+                    // BASE LARAVEL + PROYECTO:
+                    // Código aleatorio para verificar el voto después.
+                    $codigoComprobante = strtoupper(Str::random(12));
+
+                    // BASE LARAVEL + PROYECTO:
+                    // Eloquent inserta el voto en base de datos.
+                    Vote::create([
+                        'election_id' => $this->eleccion->id,
+                        'category_id' => $categoria->id,
+                        'option_id' => $opcion->id,
+                        'user_id' => $this->eleccion->is_anonymous ? null : $usuario->id,
+                        'encrypted_vote' => encrypt($opcion->label),
+                        'receipt_code' => $codigoComprobante,
+                    ]);
+
+                    // LIVEWIRE + PROYECTO:
+                    // Este array es solo para la interfaz, no es una tabla de base de datos.
+                    $this->comprobantes[] = [
+                        'categoria' => $categoria->name,
+                        'codigo_comprobante' => $codigoComprobante,
+                    ];
+                }
+
+                // PROYECTO:
+                // Registro de participación: marca que este usuario ya votó en la
+                // categoría. Es lo que evita el doble voto (también en anónimas).
+                Participation::create([
+                    'election_id' => $this->eleccion->id,
+                    'category_id' => $categoria->id,
+                    'user_id' => $usuario->id,
+                ]);
+            }
+        });
 
         // LIVEWIRE:
         // Se usa para cambiar la vista y mostrar el mensaje final.

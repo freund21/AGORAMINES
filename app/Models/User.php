@@ -76,16 +76,26 @@ class User extends Authenticatable
     }
 
     // PROYECTO:
+    // Participaciones del usuario (registro de "ya votó", independiente del voto).
+    public function participations()
+    {
+        return $this->hasMany(Participation::class);
+    }
+
+    // PROYECTO:
     // Lógica de negocio propia para saber si el usuario tiene rol administrador.
+    // Se usa el operador null-safe (?->) para no fallar si el rol es nulo.
     public function isAdmin(): bool
     {
-        return $this->role->name === 'admin';
+        return $this->role?->name === 'admin';
     }
 
     // PROYECTO:
     // Comprueba si este usuario ya votó en una categoría concreta.
+    // Se consulta participations (no votes) para que funcione también en
+    // votaciones anónimas, donde el voto no guarda el user_id.
     public function hasVotedInCategory(int $categoryId): bool
     {
-        return $this->votes()->where('category_id', $categoryId)->exists();
+        return $this->participations()->where('category_id', $categoryId)->exists();
     }
 }
